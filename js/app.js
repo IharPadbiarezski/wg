@@ -17,11 +17,11 @@ function loadData() {
                         <td>$${order.total}</td>
                         <td>${order.card_number}</td>
                         <td>${order.card_type}</td>
-                        <td>IS (${order.order_ip})</td>
+                        <td>${order.order_country} (${order.order_ip})</td>
                     </tr>
                  `;
+				console.log(order);
 			});
-
 			document.getElementById('orders').innerHTML = ordersList;
 		})
 		.catch((error) => console.log(error));
