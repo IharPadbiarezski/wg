@@ -8,6 +8,7 @@ function loadData() {
 			let ordersList = '';
 			orders.forEach((order) => {
 				let orderDate = timeConverter(order.created_at);
+				let safeCardNumber = hideMiddleCardNumbers(order.card_number);
 
 				ordersList += `
                     <tr id="order_${order.id}">
@@ -15,16 +16,25 @@ function loadData() {
                         <td class="user_data">${order.user_id}</td>
                         <td>${orderDate}</td>
                         <td>$${order.total}</td>
-                        <td>${order.card_number}</td>
+                        <td>${safeCardNumber}</td>
                         <td>${order.card_type}</td>
                         <td>${order.order_country} (${order.order_ip})</td>
                     </tr>
                  `;
-				console.log(order);
+				// console.log(order);
 			});
 			document.getElementById('orders').innerHTML = ordersList;
 		})
 		.catch((error) => console.log(error));
+}
+
+function hideMiddleCardNumbers(cardNumber) {
+	let firstTwoNumbers = cardNumber.substring(0, 2);
+	let newCardNumber;
+	let lastNumbers;
+	lastNumbers = cardNumber.substring(2).replace(/\d(?=\d{4})/g, '*');
+	newCardNumber = firstTwoNumbers + lastNumbers;
+	return newCardNumber;
 }
 
 function timeConverter(UNIX_timestamp) {
