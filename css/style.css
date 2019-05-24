@@ -2,6 +2,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	font-family: 'Arial';
 }
 
 a {
@@ -23,4 +24,16 @@ td {
 th,
 td {
 	padding: 15px;
+}
+
+body {
+	width: 100vw;
+}
+.app {
+	margin: 0 auto;
+	width: 95%;
+}
+
+.user-details {
+	display: none;
 }
