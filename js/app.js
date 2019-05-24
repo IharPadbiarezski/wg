@@ -13,7 +13,7 @@ function loadData() {
 				ordersList += `
                     <tr id="order_${order.id}">
                         <td>${order.transaction_id}</td>
-                        <td class="user_data">${order.user_id}</td>
+                        <td class="user_data" data-id="${order.user_id}">${order.user_id}</td>
                         <td>${orderDate}</td>
                         <td>$${order.total}</td>
                         <td>${safeCardNumber}</td>
@@ -24,6 +24,7 @@ function loadData() {
 				// console.log(order);
 			});
 			document.getElementById('orders').innerHTML = ordersList;
+			getUserInfo();
 		})
 		.catch((error) => console.log(error));
 }
@@ -50,4 +51,28 @@ function timeConverter(UNIX_timestamp) {
 	let ampm = hour < 12 ? 'AM' : 'PM';
 	let time = `${date}/${month}/${year}, ${hourNew}:${min}:${sec} ${ampm}`;
 	return time;
+}
+
+function getUserInfo() {
+	fetch('../data/users.json')
+		.then((response) => response.json())
+		.then((users) => {
+			users.forEach((user) => {
+				let userOrders = document.querySelectorAll('.user_data');
+				userOrders.forEach((userOrder) => {
+					if (userOrder.textContent == user.id && user.gender === 'Male') {
+						let html = `<a href="#">Mr. ${user.first_name} ${user.last_name}</a>`;
+						userOrder.innerHTML = html;
+					}
+
+					if (userOrder.textContent == user.id && user.gender === 'Female') {
+						let html = `<a href="#">Ms. ${user.first_name} ${user.last_name}</a>`;
+						userOrder.innerHTML = html;
+					}
+				});
+			});
+
+			console.log(users);
+		})
+		.catch((error) => console.log(error));
 }
