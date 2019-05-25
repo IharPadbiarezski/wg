@@ -1,11 +1,11 @@
 // Variables
-const userInfoLink = document.querySelector('table');
-console.log(userInfoLink);
+const table = document.querySelector('table');
 
 // Evemt Listeners
 
 document.addEventListener('DOMContentLoaded', loadData);
-userInfoLink.addEventListener('click', (e) => {
+table.addEventListener('click', (e) => {
+	e.preventDefault();
 	if (e.target.className === 'user-link') {
 		e.target.nextElementSibling.classList.toggle('user-details');
 	}
@@ -34,7 +34,6 @@ function loadData() {
                         <td>${order.order_country} (${order.order_ip})</td>
                     </tr>
                  `;
-				// console.log(order);
 			});
 			document.getElementById('orders').innerHTML = ordersList;
 			getUserInfo();
@@ -87,11 +86,9 @@ function getUserInfo() {
 				let userOrders = document.querySelectorAll('.user_data');
 				userOrders.forEach((userOrder) => {
 					let userDiv = `
-                        <div class="user-details">
+                        <div class="${user.company_id} user-details">
                             <p>Birthday: ${userBirthday}</p>
-                            <p><img src="${user.avatar}" width="100px"></p>
-                            <p>Company: <a href="http://awesome.website" target="_blank">Bumbershoot Corp.</a></p>
-                            <p>Industry: Apparel / Consumer Services</p>
+							<p><img src="${user.avatar}" width="100px"></p>
                         </div>
                     `;
 
@@ -112,8 +109,7 @@ function getUserInfo() {
 					}
 				});
 			});
-
-			console.log(users);
+			getCompanies();
 		})
 		.catch((error) => console.log(error));
 }
@@ -122,41 +118,18 @@ function getCompanies() {
 	fetch('../data/companies.json')
 		.then((response) => response.json())
 		.then((companies) => {
+			let usersInfo = document.querySelectorAll('.user-details');
 			companies.forEach((company) => {
-				let userBirthday;
-				if (user.birthday) {
-					userBirthday = dateConverter(user.birthday);
-				}
-				let userOrders = document.querySelectorAll('.user_data');
-				userOrders.forEach((userOrder) => {
-					let userDiv = `
-                        <div class="user-details">
-                            <p>Birthday: ${userBirthday}</p>
-                            <p><img src="${user.avatar}" width="100px"></p>
-                            <p>Company: <a href="http://awesome.website" target="_blank">Bumbershoot Corp.</a></p>
-                            <p>Industry: Apparel / Consumer Services</p>
-                        </div>
-                    `;
-
-					if (userOrder.textContent == user.id && user.gender === 'Male') {
-						let html = `
-                            <a href="#">Mr. ${user.first_name} ${user.last_name}</a>
-                            ${userDiv}
-                        `;
-						userOrder.innerHTML = html;
-					}
-
-					if (userOrder.textContent == user.id && user.gender === 'Female') {
-						let html = `
-                            <a class="user-link" href="#">Ms. ${user.first_name} ${user.last_name}</a>
-                            ${userDiv}
-                        `;
-						userOrder.innerHTML = html;
+				usersInfo.forEach((userInfo) => {
+					if (company.id && userInfo.classList.contains(`${company.id}`)) {
+						let companyHTML = `
+							<p>Company: <a href="${company.url}" target="_blank">${company.title}</a></p>
+							<p>Industry: ${company.industry} / ${company.sector}</p>
+						`;
+						userInfo.innerHTML += companyHTML;
 					}
 				});
 			});
-
-			console.log(companies);
 		})
 		.catch((error) => console.log(error));
 }
